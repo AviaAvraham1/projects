@@ -6,7 +6,11 @@
 
 #IncludeRegexTransform: 
 
+<<<<<<< HEAD
 /mnt/c/Compiles C AVIA/Ex1/main.c
+=======
+/mnt/c/Users/Noy Zini/Documents/GitHub/projects/main.c
+>>>>>>> 9e60c671fbfccb09a03d4e98750865271fac82c0
 stdio.h
 -
 
