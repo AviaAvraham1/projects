@@ -5,3 +5,4 @@ struct RLEList_t{
 };
 
 //implement the functions here
+RLEList RLEListCreate();
