@@ -17,7 +17,8 @@ static int NodeCount(RLEList list);
 };
 
 //implement the functions here
-RLEList RLEListCreate(){
+RLEList RLEListCreate()
+{
     RLEList ptr= malloc(sizeof(*ptr));
     if(!ptr)
     {
@@ -179,6 +180,7 @@ static int NodeCount(RLEList list)
         num++;
         num++;
         num += NumOfDigits(list->repetitions);
+        list = list->next;
     }
     return num;
 }
