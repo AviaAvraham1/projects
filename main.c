@@ -1,7 +1,15 @@
 #include <stdio.h>
-#include "RLEList.h"
+#include <stdlib.h>
 
-int main() {
+//#include "RLEList.h"
 
+
+
+int main()
+{
+   char a = '22';
+    printf("%c",a);
     return 0;
 }
+
+
