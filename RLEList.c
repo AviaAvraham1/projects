@@ -8,6 +8,7 @@
 #define NEGATIVE_NUMBER -1
 #define NEXT_DIGIT 10
 
+
 static int NumOfDigits(int num);
 static int NodeCount(RLEList list);
 static void PutIntInString(int num, char **writeTo);
@@ -147,12 +148,14 @@ RLEListResult RLEListAppend(RLEList list, char value)
         newNode->letter = value;
         newNode->repetitions = 1;
         list->next=newNode;
+        //RLEListDestroy(newNode);
         return RLE_LIST_SUCCESS;
     }
 }
 
 RLEListResult RLEListRemove(RLEList list, int index)
 {
+
     if (list == NULL)
         return RLE_LIST_NULL_ARGUMENT;
 
@@ -188,6 +191,7 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function)
         list = list->next;
     }
     return RLE_LIST_SUCCESS;
+
 }
 
 
