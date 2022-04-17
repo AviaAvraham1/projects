@@ -4,8 +4,10 @@
 
 #include "AsciiArt.h"
 #include <stdio.h>
+#include "RLEList.h"
+#include <stdlib.h>
 
-#define LINE_SIZE 256
+
 
 RLEList asciiArtRead(FILE* in_stream)
 {
@@ -13,22 +15,32 @@ RLEList asciiArtRead(FILE* in_stream)
     in_stream= fopen("in_stream","r");
     if(in_stream==NULL)
         return NULL;
-
-    int repetitions=0;
-    while (1)
+    char letter=fgetc(in_stream);
+    while(letter!=EOF)
     {
-        char letter=fgetc(in_stream);
-        if(letter==EOF)
-        {
-            RLEListAppend(file_RLE,letter);
-
-            break;
-        }
-
-
+        if(RLEListAppend(file_RLE,letter)!=RLE_LIST_SUCCESS)
+            return NULL;
+        letter=fgetc(in_stream);
     }
-
-
     fclose(in_stream);
     return file_RLE;
+}
+
+
+
+RLEListResult asciiArtPrintEncoded(RLEList list,FILE* out_stream)
+{
+
+    out_stream = fopen("out_stream","w");
+    RLEListResult result;
+    char *encoded_list= RLEListExportToString(list,result);
+    if(result==RLE_LIST_SUCCESS)
+    {
+        fprintf(out_stream, encoded_list);
+        free(encoded_list);
+        fclose(out_stream);
+        return RLE_LIST_SUCCESS;
+    }
+    fclose(out_stream);
+    return RLE_LIST_NULL_ARGUMENT;
 }
