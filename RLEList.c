@@ -5,10 +5,21 @@
 
 #define EMPTY_CHAR '\0'
 #define EMPTY_NODE -1
+#define NEGATIVE_NUMBER -1
+#define NEXT_DIGIT 10
 
 static int NumOfDigits(int num);
-static char* intToCharArray(int num);
 static int NodeCount(RLEList list);
+static void PutIntInString(int num, char **writeTo);
+
+/*
+ * TO DO:
+ * In append - should we check case-sensitive?
+ * In Export - consider making NodeCount return required characters instead - than fix malloc for better readability - rename to CharacterCount?
+ * Make NodeCount's While loop more readable?
+ * on Export - what if result (parameter) ptr is NULL?
+ * RLEListGet doesn't return value in 'all control paths' - Noy
+ */
 
  struct RLEList_t{
     char letter;
@@ -87,18 +98,23 @@ char* RLEListExportToString(RLEList list, RLEListResult* result)
         return NULL;
     }
     char *list_as_string=malloc(NodeCount(list)*3* sizeof(char));
+    char *stringStart = list_as_string;
     while (list)
     {
         *list_as_string=list->letter;
         list_as_string++;
-        *list_as_string=(char)(list->repetitions);
-        list_as_string++;
+
+        PutIntInString(list->repetitions,&list_as_string);
+
+        //*list_as_string=(char)(list->repetitions);
+        //list_as_string++;
+
         *list_as_string='\n';
         list_as_string++;
         list = list->next;
     }
     *result= RLE_LIST_SUCCESS;
-    return list_as_string;
+    return stringStart;
 }
 
 
@@ -115,8 +131,15 @@ RLEListResult RLEListAppend(RLEList list, char value)
         list->repetitions++;
         return RLE_LIST_SUCCESS;
     }
+    else if (list->repetitions == 0)
+    {
+        list->letter = value;
+        list->repetitions++;
+        return RLE_LIST_SUCCESS;
+    }
     else
     {
+        assert(list->letter != value && list->repetitions != 0 && list->next == NULL);
         RLEList newNode = RLEListCreate();
         if (newNode == NULL)
             return RLE_LIST_OUT_OF_MEMORY;
@@ -124,14 +147,12 @@ RLEListResult RLEListAppend(RLEList list, char value)
         newNode->letter = value;
         newNode->repetitions = 1;
         list->next=newNode;
-        //RLEListDestroy(newNode);
         return RLE_LIST_SUCCESS;
     }
 }
 
 RLEListResult RLEListRemove(RLEList list, int index)
 {
-
     if (list == NULL)
         return RLE_LIST_NULL_ARGUMENT;
 
@@ -167,13 +188,15 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function)
         list = list->next;
     }
     return RLE_LIST_SUCCESS;
-
 }
+
 
 static int NodeCount(RLEList list)
 {
     if (list == NULL)
+    {
         return RLE_LIST_NULL_ARGUMENT;
+    }
     int num = 0;
     while (list != NULL)
     {
@@ -188,22 +211,38 @@ static int NodeCount(RLEList list)
 static int NumOfDigits(int num)
 {
     if (num < 0)
-        return -1; //ADD DEFINE HERE <--------------------
+        return NEGATIVE_NUMBER;
     if (num == 0)
         return 1;
 
     int digits = 0;
     while (num != 0)
     {
-        num /= 10;
+        num /= NEXT_DIGIT;
         digits++;
     }
     return digits;
 }
 
-static char* intToCharArray(int num)
+static char getDigit(int num, int requiredDigit)
 {
-    //Avia will do
-
+    //in 123 1 is the first digit
+    int toLoop = NumOfDigits(num) - requiredDigit;
+    for (int i = 0 ; i < toLoop; i++)
+        num /= 10;
+    return (char)((num % 10) + '0');
 }
+
+static void PutIntInString(int num, char **writeTo)
+{
+    int digits = NumOfDigits(num);
+    for (int i = 0; i < digits; i++)
+    {
+        **writeTo = getDigit(num, i + 1);
+        *writeTo+= 1;
+    }
+    //printf("converted is : %s",*writeTo);
+}
+
+
 
