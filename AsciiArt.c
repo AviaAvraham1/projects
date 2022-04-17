@@ -4,7 +4,6 @@
 
 #include "AsciiArt.h"
 #include <stdio.h>
-#include "RLEList.h"
 #include <stdlib.h>
 
 

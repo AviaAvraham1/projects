@@ -7,12 +7,13 @@
 #define EMPTY_NODE -1
 #define NEGATIVE_NUMBER -1
 #define NEXT_DIGIT 10
+#define EMPTY_LIST 0
 
 
 static int NumOfDigits(int num);
 static int NodeCount(RLEList list);
 static void PutIntInString(int num, char **writeTo);
-
+static char getDigit(int num, int requiredDigit);
 /*
  * TO DO:
  * In append - should we check case-sensitive?
@@ -28,7 +29,7 @@ static void PutIntInString(int num, char **writeTo);
     struct RLEList_t* next;
 };
 
-//implement the functions here
+
 RLEList RLEListCreate()
 {
     RLEList ptr= malloc(sizeof(*ptr));
@@ -98,7 +99,7 @@ char* RLEListExportToString(RLEList list, RLEListResult* result)
         *result= RLE_LIST_NULL_ARGUMENT;
         return NULL;
     }
-    char *list_as_string=malloc(NodeCount(list)*3* sizeof(char));
+    char *list_as_string=malloc(NodeCount(list)*3* sizeof(char));//<-----3 needs to be defined or part of a function , why to we need it?
     char *stringStart = list_as_string;
     while (list)
     {
@@ -107,9 +108,6 @@ char* RLEListExportToString(RLEList list, RLEListResult* result)
 
         PutIntInString(list->repetitions,&list_as_string);
 
-        //*list_as_string=(char)(list->repetitions);
-        //list_as_string++;
-
         *list_as_string='\n';
         list_as_string++;
         list = list->next;
@@ -117,7 +115,6 @@ char* RLEListExportToString(RLEList list, RLEListResult* result)
     *result= RLE_LIST_SUCCESS;
     return stringStart;
 }
-
 
 RLEListResult RLEListAppend(RLEList list, char value)
 {
@@ -148,18 +145,17 @@ RLEListResult RLEListAppend(RLEList list, char value)
         newNode->letter = value;
         newNode->repetitions = 1;
         list->next=newNode;
-        //RLEListDestroy(newNode);
         return RLE_LIST_SUCCESS;
     }
 }
 
 RLEListResult RLEListRemove(RLEList list, int index)
 {
-
     if (list == NULL)
         return RLE_LIST_NULL_ARGUMENT;
 
     RLEList previousOne;
+
     while (index > list->repetitions)
     {
         if (list->next == NULL)
@@ -191,22 +187,20 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function)
         list = list->next;
     }
     return RLE_LIST_SUCCESS;
-
 }
-
 
 static int NodeCount(RLEList list)
 {
-    if (list == NULL)
+    if (list->letter == EMPTY_CHAR)
     {
-        return RLE_LIST_NULL_ARGUMENT;
+        return EMPTY_LIST;
     }
     int num = 0;
-    while (list != NULL)
+    while (list != NULL) // <----- need to make it somehow more readable
     {
-        num++;
-        num++;
-        num += NumOfDigits(list->repetitions);
+        num++;// for char
+        num++;// ??
+        num += NumOfDigits(list->repetitions);//for digits
         list = list->next;
     }
     return num;
@@ -214,11 +208,10 @@ static int NodeCount(RLEList list)
 
 static int NumOfDigits(int num)
 {
-    if (num < 0)
+    if (num < 0) //<----- unreachable case
         return NEGATIVE_NUMBER;
     if (num == 0)
         return 1;
-
     int digits = 0;
     while (num != 0)
     {
@@ -227,14 +220,13 @@ static int NumOfDigits(int num)
     }
     return digits;
 }
-
+//in 123 1 is the first digit <----------------------------- to be deleted
 static char getDigit(int num, int requiredDigit)
 {
-    //in 123 1 is the first digit
     int toLoop = NumOfDigits(num) - requiredDigit;
     for (int i = 0 ; i < toLoop; i++)
         num /= 10;
-    return (char)((num % 10) + '0');
+    return (char)((num % 10) + '0');//<---------------------is this convertion allowed?
 }
 
 static void PutIntInString(int num, char **writeTo)
@@ -247,6 +239,5 @@ static void PutIntInString(int num, char **writeTo)
     }
     //printf("converted is : %s",*writeTo);
 }
-
 
 
