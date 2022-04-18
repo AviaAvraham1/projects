@@ -9,6 +9,7 @@
 #include <stdbool.h>
 #include "RLEList.h"
 
+
 /**
 *   asciiArtRead: Read a given file and outputs an RLE list accordingly.
 *
@@ -20,7 +21,16 @@
 */
 RLEList asciiArtRead(FILE* in_stream);
 
-
+/**
+*   asciiArtPrint: Writes an image to given file
+*
+* @param list - An image represented as an RLEList
+* @param out_stream - The file to write the image to.
+* @return
+* 	RLE_LIST_NULL_ARGUMENT if a NULL was sent as one of the parameters
+ * 	RLE_LIST_SUCCESS if the process ended successfully
+*/
+RLEListResult asciiArtPrint(RLEList list, FILE *out_stream);
 
 
 /**

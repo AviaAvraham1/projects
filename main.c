@@ -1,58 +1,34 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "RLEList.h"
+//#include "RLEList.h"
+#include "AsciiArt.h"
 
 /*
-static int NumOfDigits(int num)
-{
-    if (num < 0)
-        return -1;
-    if (num == 0)
-        return 1;
+ * TO DO:
+ * Fix asciiArtPrintEncoded()
+ * on RLEListRemove() join 2 nodes together if middle one is gone
+ * complete RLEList.c's to do list
+ */
 
-    int digits = 0;
-    while (num != 0)
-    {
-        num /= 10;
-        digits++;
-    }
-    return digits;
-}
-
-char getDigit(int num, int requiredDigit)
-{
-    //in 123 1 is the first digit
-    int toLoop = NumOfDigits(num) - requiredDigit;
-    for (int i = 0 ; i < toLoop; i++)
-        num /= 10;
-    return (char)((num % 10) + '0');
-}
-
-static char* intToString(int num, char **writeTo)
-{
-    char *c = *writeTo;
-    int digits = NumOfDigits(num);
-    for (int i = 0; i < digits; i++)
-    {
-        **writeTo = getDigit(num, i + 1);
-        *writeTo += 1;
-    }
-    **writeTo = '\n';
-    *writeTo = c;
-    printf("converted is : %s",*writeTo);
-    return 0;
-}
-*/
 int main()
 {
-    RLEList  rle = RLEListCreate();
-    RLEListAppend(rle,'A');
-    RLEListAppend(rle,'A');
-    char *a = malloc(20);
-    char *c = RLEListExportToString(rle,a);
-    printf(c);
-    free(a);
+    char *readPath = "../test2.txt", *writePath = "../writeHere.txt";
+    FILE* fileReadFrom = fopen(readPath, "r");
+    RLEList fileAsList = asciiArtRead(fileReadFrom);
+    RLEListResult result;
+    char *c = RLEListExportToString(fileAsList,&result);
+    //printf("%s",c); //here works so far!
+
+    FILE* fileWriteTo = fopen(writePath,"w");
+    //FILE* out = stdout; //doesn't work for some reason
+    result = asciiArtPrint(fileAsList,fileWriteTo);
+
+    if (result == RLE_LIST_ERROR)
+        printf("error");
+
+    fclose(fileReadFrom);
+    fclose(fileWriteTo);
     return 0;
 }
 

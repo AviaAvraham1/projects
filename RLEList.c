@@ -21,6 +21,7 @@ static char getDigit(int num, int requiredDigit);
  * Make NodeCount's While loop more readable?
  * on Export - what if result (parameter) ptr is NULL?
  * RLEListGet doesn't return value in 'all control paths' - Noy
+ * RLEListExportToString - check if result is NULL
  */
 
  struct RLEList_t{
@@ -226,7 +227,7 @@ static char getDigit(int num, int requiredDigit)
     int toLoop = NumOfDigits(num) - requiredDigit;
     for (int i = 0 ; i < toLoop; i++)
         num /= 10;
-    return (char)((num % 10) + '0');//<---------------------is this convertion allowed?
+    return (char)((num % 10) + '0');//<---------------------is this convertion allowed? yes, but need to make more readable and add define + better name for toLoop
 }
 
 static void PutIntInString(int num, char **writeTo)
