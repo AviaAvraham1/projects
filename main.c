@@ -29,6 +29,16 @@ int main(int argc, char** argv)
 
     fclose(fileReadFrom);
     fclose(fileWriteTo);
+
+    //-------AsciiArtTool - code ---------------
+    if(argc!=4) //needs a define
+    {
+        printf("Error in input, not enough arguments");
+        return 0;
+    }
+
+
+
     return 0;
 }
 
