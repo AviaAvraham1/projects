@@ -191,7 +191,7 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function)
 }
 
 
-static int NodeCount(RLEList list)
+static int CharCount(RLEList list)
 {
     if (list == NULL)
     {

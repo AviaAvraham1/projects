@@ -8,17 +8,14 @@
 #define NEGATIVE_NUMBER -1
 #define NEXT_DIGIT 10
 #define EMPTY_LIST 0
-
+#define CHAR_AND_NEW_LINE 2
 
 static int NumOfDigits(int num);
-static int NodeCount(RLEList list);
+static int CharCount(RLEList list);
 static void PutIntInString(int num, char **writeTo);
 static char getDigit(int num, int requiredDigit);
 /*
  * TO DO:
- * In append - should we check case-sensitive?
- * In Export - consider making NodeCount return required characters instead - than fix malloc for better readability - rename to CharacterCount?
- * Make NodeCount's While loop more readable?
  * on Export - what if result (parameter) ptr is NULL?
  * RLEListGet doesn't return value in 'all control paths' - Noy
  * RLEListExportToString - check if result is NULL
@@ -97,10 +94,13 @@ char* RLEListExportToString(RLEList list, RLEListResult* result)
 {
     if(list==NULL)
     {
-        *result= RLE_LIST_NULL_ARGUMENT;
+        if (result != NULL)
+            *result= RLE_LIST_NULL_ARGUMENT;
         return NULL;
     }
-    char *list_as_string=malloc(NodeCount(list)*3* sizeof(char));//<-----3 needs to be defined or part of a function , why to we need it?
+    char *list_as_string=malloc(CharCount(list) * sizeof(char));
+    if (list_as_string == NULL)
+
     char *stringStart = list_as_string;
     while (list)
     {
@@ -113,7 +113,8 @@ char* RLEListExportToString(RLEList list, RLEListResult* result)
         list_as_string++;
         list = list->next;
     }
-    *result= RLE_LIST_SUCCESS;
+    if (result != NULL)
+        *result= RLE_LIST_SUCCESS;
     return stringStart;
 }
 
@@ -190,21 +191,20 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function)
     return RLE_LIST_SUCCESS;
 }
 
-static int NodeCount(RLEList list)
+static int CharCount(RLEList list)
 {
     if (list->letter == EMPTY_CHAR)
     {
         return EMPTY_LIST;
     }
-    int num = 0;
-    while (list != NULL) // <----- need to make it somehow more readable
+    int count = 0;
+    while (list != NULL)
     {
-        num++;// for char
-        num++;// ??
-        num += NumOfDigits(list->repetitions);//for digits
+        count+=CHAR_AND_NEW_LINE;
+        count += NumOfDigits(list->repetitions);
         list = list->next;
     }
-    return num;
+    return count;
 }
 
 static int NumOfDigits(int num)
