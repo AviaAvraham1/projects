@@ -67,7 +67,13 @@ int main(int argc, char** argv)
         }
         else if (strcmp(argv[1],"-i") == 0)
         {
-            RLEListMap(image,InvertChar);
+            RLEListResult result;
+            result=RLEListMap(image,&InvertChar);
+            if(result!=RLE_LIST_SUCCESS)
+            {
+                printf("error map");
+                return 0;
+            }
             asciiArtPrint(image,dest);
             RLEListDestroy(image);
         }
