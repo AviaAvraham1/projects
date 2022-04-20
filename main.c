@@ -16,44 +16,24 @@ char InvertChar(char to_invert);
 int main(int argc, char** argv)
 {
     /*
-    printf("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-    char *readPath = "../test3.txt", *writePath = "../writeHere.txt", *flag = "-i";
-    FILE* source = fopen(readPath,"r");
-    if (!source)
-    {
-        printf("error");
-        return 0;
-    }
-    FILE* dest = fopen(writePath,"w");
-    if (!dest)
-    {
-        printf("error");
-        fclose(source);
-        return 0;
-    }
+    char *readPath = "../test1.txt", *writePath = "../writeHere.txt";
+    FILE* fileReadFrom = fopen(readPath, "r");
+    RLEList fileAsList = asciiArtRead(fileReadFrom);
+    RLEListResult result;
+    char *c = RLEListExportToString(fileAsList,&result);
+    //printf("%s",c); //here works so far!
 
-    RLEList image = asciiArtRead(source);
+    FILE* fileWriteTo = fopen(writePath,"w");
+    //FILE* out = stdout; //doesn't work for some reason
+    //result = asciiArtPrint(fileAsList,fileWriteTo);
+    result = asciiArtPrintEncoded(fileAsList,fileWriteTo);
 
-    if (strcmp(flag,"-e") == 0)
-    {
-        printf("??");
-        asciiArtPrintEncoded(image,dest);
-        RLEListDestroy(image);
-    }
-    else if (strcmp(flag,"-i") == 0)
-    {
-        RLEListMap(image,InvertChar);
-        asciiArtPrint(image,dest);
-        RLEListDestroy(image);
-    }
-    else
-    {
-        printf("Unknown flag");
-        return 0;
-    }
-    fclose(source);
-    fclose(dest);
-    */
+    if (result == RLE_LIST_ERROR)
+        printf("error");
+
+    fclose(fileReadFrom);
+    fclose(fileWriteTo);
+     */
     //-------AsciiArtTool - code ---------------
 
     if(argc!=4) //needs a define
@@ -100,7 +80,6 @@ int main(int argc, char** argv)
         fclose(dest);
     }
     return 0;
-
 }
 
 char InvertChar(char to_invert)
