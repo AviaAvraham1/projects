@@ -66,7 +66,6 @@ RLEListResult asciiArtPrint(RLEList list, FILE *out_stream)
     }
     fputs(write,out_stream);
     return RLE_LIST_SUCCESS;
-
 }
 
 

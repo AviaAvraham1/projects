@@ -19,6 +19,8 @@ static char getDigit(int num, int requiredDigit);
  * on Export - what if result (parameter) ptr is NULL?
  * RLEListGet doesn't return value in 'all control paths' - Noy
  * RLEListExportToString - check if result is NULL
+ * RLELIstRemove - unite two nodes when needed AND make it possible to delete the first node
+ * Change names to meet convention
  */
 
  struct RLEList_t{
@@ -100,7 +102,11 @@ char* RLEListExportToString(RLEList list, RLEListResult* result)
     }
     char *list_as_string=malloc(CharCount(list) * sizeof(char));
     if (list_as_string == NULL)
-
+    {
+        if (result != NULL)
+            *result= RLE_LIST_OUT_OF_MEMORY;
+        return NULL;
+    }
     char *stringStart = list_as_string;
     while (list)
     {
@@ -209,7 +215,7 @@ static int CharCount(RLEList list)
 
 static int NumOfDigits(int num)
 {
-    if (num < 0) //<----- unreachable case
+    if (num < 0)
         return NEGATIVE_NUMBER;
     if (num == 0)
         return 1;
@@ -236,9 +242,8 @@ static void PutIntInString(int num, char **writeTo)
     for (int i = 0; i < digits; i++)
     {
         **writeTo = getDigit(num, i + 1);
-        *writeTo+= 1;
+        *writeTo += 1;
     }
-    //printf("converted is : %s",*writeTo);
 }
 
 
