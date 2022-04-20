@@ -53,8 +53,6 @@ RLEListResult asciiArtPrint(RLEList list, FILE *out_stream)
 
             for (int i = 0; i < letterRepetitions; i++)
             {
-                if (letterToWrite == currentChar)
-                    printf("%d %d\n",letterToWrite, letterRepetitions);
                 *ptr = letterToWrite;
                 ptr++;
             }
