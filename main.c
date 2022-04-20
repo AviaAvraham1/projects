@@ -65,7 +65,8 @@ int main(int argc, char** argv)
         }
         else if (strcmp(argv[1],"-i") == 0)
         {
-            RLEListMap(image,&InvertChar);
+            RLEListResult result;
+            result=RLEListMap(image,&InvertChar);
             asciiArtPrint(image,dest);
             RLEListDestroy(image);
         }

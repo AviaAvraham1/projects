@@ -9,6 +9,7 @@
 #define NEXT_DIGIT 10
 #define EMPTY_LIST 0
 #define CHAR_AND_NEW_LINE 2
+#define CHAR_CONVERT_INT '0'
 
 static int NumOfDigits(int num);
 static int CharCount(RLEList list);
@@ -16,10 +17,6 @@ static void PutIntInString(int num, char **writeTo);
 static char getDigit(int num, int requiredDigit);
 /*
  * TO DO:
- * on Export - what if result (parameter) ptr is NULL?
- * RLEListExportToString - check if result is NULL
- * RLELIstRemove - unite two nodes when needed AND make it possible to delete the first node
- * Change names to meet convention
  */
 
  struct RLEList_t{
@@ -167,6 +164,17 @@ RLEListResult RLEListRemove(RLEList list, int index)
     if (list == NULL)
         return RLE_LIST_NULL_ARGUMENT;
 
+    if(list->repetitions==1 && index==1)
+    {
+        RLEList to_delete=list->next;
+        list->letter=to_delete->letter;
+        list->repetitions=to_delete->repetitions;
+        list->next=to_delete->next;
+        to_delete->next=NULL;
+        RLEListDestroy(to_delete);
+        return RLE_LIST_SUCCESS;
+    }
+
     RLEList previousOne;
 
     while (index > list->repetitions)
@@ -180,12 +188,21 @@ RLEListResult RLEListRemove(RLEList list, int index)
 
     assert(list != NULL && index < list->repetitions);
 
+
     list->repetitions--;
     if (list->repetitions == 0)
     {
         previousOne->next = list->next;
+        RLEList next_one=list;
         list->next = NULL;
         RLEListDestroy(list);
+        if(next_one->letter==previousOne->letter)
+        {
+            previousOne->repetitions+=next_one->repetitions;
+            previousOne->next=next_one->next;
+            previousOne->next=NULL;
+            RLEListDestroy(next_one);
+        }
     }
     return RLE_LIST_SUCCESS;
 }
@@ -235,10 +252,10 @@ static int NumOfDigits(int num)
 
 static char getDigit(int num, int requiredDigit)
 {
-    int toLoop = NumOfDigits(num) - requiredDigit;
-    for (int i = 0 ; i < toLoop; i++)
-        num /= 10;
-    return (char)((num % 10) + '0');//<---------------------is this convertion allowed? yes, but need to make more readable and add define + better name for toLoop
+    int reductions_needed = NumOfDigits(num) - requiredDigit;
+    for (int i = 0 ; i < reductions_needed; i++)
+        num /= NEXT_DIGIT;
+    return (char)((num % NEXT_DIGIT) + CHAR_CONVERT_INT);
 }
 
 static void PutIntInString(int num, char **writeTo)
