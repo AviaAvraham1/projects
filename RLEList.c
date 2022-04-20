@@ -17,7 +17,6 @@ static char getDigit(int num, int requiredDigit);
 /*
  * TO DO:
  * on Export - what if result (parameter) ptr is NULL?
- * RLEListGet doesn't return value in 'all control paths' - Noy
  * RLEListExportToString - check if result is NULL
  * RLELIstRemove - unite two nodes when needed AND make it possible to delete the first node
  * Change names to meet convention
@@ -71,25 +70,31 @@ char RLEListGet(RLEList list, int index, RLEListResult *result)
 {
     if(list==NULL)
     {
-        *result= RLE_LIST_NULL_ARGUMENT;
+        if(result!=NULL)
+            *result= RLE_LIST_NULL_ARGUMENT;
         return EMPTY_CHAR;
     }
-    if(RLEListSize(list)<index)
+    if(RLEListSize(list)<index || index<=0)
     {
-        *result= RLE_LIST_INDEX_OUT_OF_BOUNDS;
+        if(result!=NULL)
+            *result= RLE_LIST_INDEX_OUT_OF_BOUNDS;
         return EMPTY_CHAR;
     }
     int count=0;
+    char letter=list->letter;
     while (list)
     {
         count+=list->repetitions;
         if(index<=count)
         {
-            *result= RLE_LIST_SUCCESS;
-            return list->letter;
+            if(result!=NULL)
+                *result= RLE_LIST_SUCCESS;
+            letter=list->letter;
+            break;
         }
         list = list->next;
     }
+    return letter;
 }
 
 char* RLEListExportToString(RLEList list, RLEListResult* result)
@@ -227,7 +232,7 @@ static int NumOfDigits(int num)
     }
     return digits;
 }
-//in 123 1 is the first digit <----------------------------- to be deleted
+
 static char getDigit(int num, int requiredDigit)
 {
     int toLoop = NumOfDigits(num) - requiredDigit;
