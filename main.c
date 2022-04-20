@@ -11,7 +11,7 @@
  * complete RLEList.c's to do list
  */
 
-int main()
+int main(int argc, char** argv)
 {
     char *readPath = "../test2.txt", *writePath = "../writeHere.txt";
     FILE* fileReadFrom = fopen(readPath, "r");
