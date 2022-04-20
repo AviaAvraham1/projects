@@ -27,7 +27,7 @@ RLEListResult asciiArtPrint(RLEList list, FILE *out_stream)
 {
     RLEListResult result;
     char *list_as_string = RLEListExportToString(list,&result);
-
+    char *list_as_string_head = list_as_string;
     if (result != RLE_LIST_SUCCESS)//test this!!! result might be initialized as NULL ?
         return result;
 
@@ -47,11 +47,14 @@ RLEListResult asciiArtPrint(RLEList list, FILE *out_stream)
         }
         else if (currentChar == '\n')
         {
-            //if (letterToWrite == currentChar)
-            //    letterRepetitions--;
+            if (letterToWrite == currentChar) {
+                letterRepetitions--;
+            }
 
             for (int i = 0; i < letterRepetitions; i++)
             {
+                if (letterToWrite == currentChar)
+                    printf("%d %d\n",letterToWrite, letterRepetitions);
                 *ptr = letterToWrite;
                 ptr++;
             }
@@ -65,9 +68,10 @@ RLEListResult asciiArtPrint(RLEList list, FILE *out_stream)
         }
         list_as_string++;
     }
+
     fputs(write,out_stream);
     free(write);
-    free(list_as_string);
+    free(list_as_string_head);
     return RLE_LIST_SUCCESS;
 }
 

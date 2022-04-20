@@ -16,25 +16,46 @@ char InvertChar(char to_invert);
 int main(int argc, char** argv)
 {
     /*
-    char *readPath = "../test1.txt", *writePath = "../writeHere.txt";
-    FILE* fileReadFrom = fopen(readPath, "r");
-    RLEList fileAsList = asciiArtRead(fileReadFrom);
-    RLEListResult result;
-    char *c = RLEListExportToString(fileAsList,&result);
-    //printf("%s",c); //here works so far!
-
-    FILE* fileWriteTo = fopen(writePath,"w");
-    //FILE* out = stdout; //doesn't work for some reason
-    //result = asciiArtPrint(fileAsList,fileWriteTo);
-    result = asciiArtPrintEncoded(fileAsList,fileWriteTo);
-
-    if (result == RLE_LIST_ERROR)
+    printf("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    char *readPath = "../test3.txt", *writePath = "../writeHere.txt", *flag = "-i";
+    FILE* source = fopen(readPath,"r");
+    if (!source)
+    {
         printf("error");
+        return 0;
+    }
+    FILE* dest = fopen(writePath,"w");
+    if (!dest)
+    {
+        printf("error");
+        fclose(source);
+        return 0;
+    }
 
-    fclose(fileReadFrom);
-    fclose(fileWriteTo);
-     */
+    RLEList image = asciiArtRead(source);
+
+    if (strcmp(flag,"-e") == 0)
+    {
+        printf("??");
+        asciiArtPrintEncoded(image,dest);
+        RLEListDestroy(image);
+    }
+    else if (strcmp(flag,"-i") == 0)
+    {
+        RLEListMap(image,InvertChar);
+        asciiArtPrint(image,dest);
+        RLEListDestroy(image);
+    }
+    else
+    {
+        printf("Unknown flag");
+        return 0;
+    }
+    fclose(source);
+    fclose(dest);
+    */
     //-------AsciiArtTool - code ---------------
+
     if(argc!=4) //needs a define
     {
         printf("Usage: ./AsciiArtTool <flags> <source> <target>");
@@ -42,6 +63,7 @@ int main(int argc, char** argv)
     }
     else
     {
+
         FILE* source = fopen(argv[2],"r");
         if (!source)
         {
@@ -65,7 +87,7 @@ int main(int argc, char** argv)
         }
         else if (strcmp(argv[1],"-i") == 0)
         {
-            RLEListMap(image,&InvertChar);
+            RLEListMap(image,InvertChar);
             asciiArtPrint(image,dest);
             RLEListDestroy(image);
         }
@@ -78,6 +100,7 @@ int main(int argc, char** argv)
         fclose(dest);
     }
     return 0;
+
 }
 
 char InvertChar(char to_invert)
