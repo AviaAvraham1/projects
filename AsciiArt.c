@@ -31,15 +31,32 @@ RLEListResult asciiArtPrint(RLEList list, FILE *out_stream)
     if (result != RLE_LIST_SUCCESS)//test this!!! result might be initialized as NULL ?
         return result;
 
-    char *write = malloc(RLEListSize(list) * sizeof(char)); //need better name
+    char *write = malloc(RLEListSize(list)*20 * sizeof(char)); //need better name & find needed size with \n's
     char *ptr = write;
-    char letterToWrite = 'A';
-    int letterRepetitions = 0;
+    //char letterToWrite = 'A';
 
     while (*list_as_string)
     {
-        char currentChar = *list_as_string;
+        char toPrint = *list_as_string;
+        list_as_string++;
+        int letterRepetitions = 0;
+        while (*list_as_string != '\n')
+        {
+            letterRepetitions = letterRepetitions * 10;
+            letterRepetitions += *list_as_string - '0';
+            list_as_string++;
+        }
 
+        for (int i = 0; i < letterRepetitions; i++)
+        {
+            *ptr = toPrint;
+            ptr++;
+        }
+
+        list_as_string++;
+
+        /*
+        char currentChar = *list_as_string;
         if (currentChar >= '0' && currentChar <= '9')
         {
             letterRepetitions = letterRepetitions * 10;
@@ -64,7 +81,9 @@ RLEListResult asciiArtPrint(RLEList list, FILE *out_stream)
         {
             letterToWrite = currentChar;
         }
+
         list_as_string++;
+         */
     }
 
     fputs(write,out_stream);

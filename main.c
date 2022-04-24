@@ -15,7 +15,7 @@ char InvertChar(char to_invert);
 
 int main(int argc, char** argv)
 {
-    /*
+
     char *readPath = "../test1.txt", *writePath = "../writeHere.txt";
     FILE* fileReadFrom = fopen(readPath, "r");
     RLEList fileAsList = asciiArtRead(fileReadFrom);
@@ -33,7 +33,7 @@ int main(int argc, char** argv)
 
     fclose(fileReadFrom);
     fclose(fileWriteTo);
-     */
+    return 0;
     //-------AsciiArtTool - code ---------------
 
     if(argc!=4) //needs a define
