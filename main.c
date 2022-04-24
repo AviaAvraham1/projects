@@ -38,7 +38,7 @@ int main(int argc, char** argv)
 
     if(argc!=4) //needs a define
     {
-        printf("Usage: ./AsciiArtTool <flags> <source> <target>");
+        printf("Usage: ./AsciiArtTool <flags> <source> <target>\n");
         return 0;
     }
     else
