@@ -3,7 +3,7 @@
 // Edited by Avia Avraham on 18/04/2022
 //
 
-#include "AsciiArt.h"
+#include "AsciiArtTool.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -31,7 +31,7 @@ RLEListResult asciiArtPrint(RLEList list, FILE *out_stream)
     if (result != RLE_LIST_SUCCESS)//test this!!! result might be initialized as NULL ?
         return result;
 
-    char *write = malloc(RLEListSize(list)*20 * sizeof(char)); //need better name & find needed size with \n's
+    char *write = malloc(RLEListSize(list) * sizeof(char)); //need better name & find needed size with \n's
     char *ptr = write;
     //char letterToWrite = 'A';
 

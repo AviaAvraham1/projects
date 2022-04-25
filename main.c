@@ -3,7 +3,7 @@
 #include <string.h>
 
 //#include "RLEList.h"
-#include "AsciiArt.h"
+#include "AsciiArtTool.h"
 
 /*
  * TO DO:
@@ -15,8 +15,8 @@ char InvertChar(char to_invert);
 
 int main(int argc, char** argv)
 {
-
-    char *readPath = "../test1.txt", *writePath = "../writeHere.txt";
+    /*
+    char *readPath = "../dog.txt", *writePath = "../writeHere.txt";
     FILE* fileReadFrom = fopen(readPath, "r");
     RLEList fileAsList = asciiArtRead(fileReadFrom);
     RLEListResult result;
@@ -26,7 +26,16 @@ int main(int argc, char** argv)
     FILE* fileWriteTo = fopen(writePath,"w");
     //FILE* out = stdout; //doesn't work for some reason
     //result = asciiArtPrint(fileAsList,fileWriteTo);
-    result = asciiArtPrintEncoded(fileAsList,fileWriteTo);
+    //result = asciiArtPrintEncoded(fileAsList,fileWriteTo);
+    result=RLEListMap(readPath,&InvertChar);
+    if(result!=RLE_LIST_SUCCESS)
+    {
+        printf("error map");
+        return 0;
+    }
+    asciiArtPrint(readPath,writePath);
+    RLEListDestroy(readPath);
+
 
     if (result == RLE_LIST_ERROR)
         printf("error");
@@ -34,6 +43,7 @@ int main(int argc, char** argv)
     fclose(fileReadFrom);
     fclose(fileWriteTo);
     return 0;
+    */
     //-------AsciiArtTool - code ---------------
 
     if(argc!=4) //needs a define
@@ -86,6 +96,7 @@ int main(int argc, char** argv)
         fclose(dest);
     }
     return 0;
+
 }
 
 char InvertChar(char to_invert)
