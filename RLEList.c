@@ -103,6 +103,7 @@ char* RLEListExportToString(RLEList list, RLEListResult* result)
         return NULL;
     }
     char *list_as_string=malloc((1+CharCount(list)) * sizeof(char));
+/*
     if (CharCount(list) == 0)
     {
         *list_as_string = '\0';
@@ -110,6 +111,7 @@ char* RLEListExportToString(RLEList list, RLEListResult* result)
             *result= RLE_LIST_SUCCESS;
         return list_as_string;
     }
+    */
 
     if (!list_as_string)
     {

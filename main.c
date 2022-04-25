@@ -38,6 +38,13 @@ int main(int argc, char** argv)
         }
 
         RLEList image = asciiArtRead(source);
+        if(RLEListSize(image)==0)
+        {
+            RLEListDestroy(image);
+            fclose(source);
+            fclose(dest);
+            return 0;
+        }
 
         if (strcmp(argv[1],"-e") == 0)
         {

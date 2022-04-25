@@ -44,7 +44,7 @@ RLEListResult asciiArtPrint(RLEList list, FILE *out_stream)
         free(list_as_string);
         return RLE_LIST_OUT_OF_MEMORY;
     }
-
+/*
     if (RLEListSize(list) == 0)
     {
         *write = '\0';
@@ -53,6 +53,7 @@ RLEListResult asciiArtPrint(RLEList list, FILE *out_stream)
         free(write);
         return RLE_LIST_SUCCESS;
     }
+    */
 
     for(int i=0;i<1+RLEListSize(list);i++)
     {
@@ -99,7 +100,6 @@ RLEListResult asciiArtPrintEncoded(RLEList list,FILE* out_stream)
     RLEListResult result=RLE_LIST_SUCCESS;
     char *encoded_list= RLEListExportToString(list,&result);
 
-    printf("%s\n",encoded_list);
     if(encoded_list==NULL)
     {
         return RLE_LIST_OUT_OF_MEMORY;
@@ -110,7 +110,7 @@ RLEListResult asciiArtPrintEncoded(RLEList list,FILE* out_stream)
         return result;
     }
     //fprintf(out_stream,"%s" ,encoded_list);
-    //fputs(encoded_list,out_stream);
+    fputs(encoded_list,out_stream);
     free(encoded_list);
     return RLE_LIST_SUCCESS;
 }
