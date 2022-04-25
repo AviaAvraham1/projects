@@ -103,11 +103,15 @@ char* RLEListExportToString(RLEList list, RLEListResult* result)
         return NULL;
     }
     char *list_as_string=malloc((1+CharCount(list)) * sizeof(char));
-    if (list_as_string == NULL)
+    if (!list_as_string)
     {
         if (result != NULL)
             *result= RLE_LIST_OUT_OF_MEMORY;
         return NULL;
+    }
+    for(int i=0;i<1+CharCount(list);i++)
+    {
+        list_as_string[i]=EMPTY_CHAR;
     }
     char *stringStart = list_as_string;
     while (list)

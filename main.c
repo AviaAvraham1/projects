@@ -45,7 +45,7 @@ int main(int argc, char** argv)
         }
         else if (strcmp(argv[1],"-i") == 0)
         {
-            RLEListResult result;
+            RLEListResult result=RLE_LIST_SUCCESS;
             result=RLEListMap(image,&InvertChar);
             if(result!=RLE_LIST_SUCCESS)
             {
