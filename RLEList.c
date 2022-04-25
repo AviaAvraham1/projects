@@ -102,7 +102,7 @@ char* RLEListExportToString(RLEList list, RLEListResult* result)
             *result= RLE_LIST_NULL_ARGUMENT;
         return NULL;
     }
-    char *list_as_string=malloc(CharCount(list) * sizeof(char));
+    char *list_as_string=malloc((1+CharCount(list)) * sizeof(char));
     if (list_as_string == NULL)
     {
         if (result != NULL)
@@ -125,6 +125,7 @@ char* RLEListExportToString(RLEList list, RLEListResult* result)
         *result= RLE_LIST_SUCCESS;
     return stringStart;
 }
+
 
 RLEListResult RLEListAppend(RLEList list, char value)
 {
@@ -267,5 +268,4 @@ static void PutIntInString(int num, char **writeTo)
         *writeTo += 1;
     }
 }
-
 

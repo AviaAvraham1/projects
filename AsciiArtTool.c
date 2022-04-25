@@ -28,12 +28,20 @@ RLEListResult asciiArtPrint(RLEList list, FILE *out_stream)
     RLEListResult result;
     char *list_as_string = RLEListExportToString(list,&result);
     char *list_as_string_head = list_as_string;
+    if(list_as_string==NULL)
+        return RLE_LIST_OUT_OF_MEMORY;
     if (result != RLE_LIST_SUCCESS)//test this!!! result might be initialized as NULL ?
+    {
+        free(list_as_string);
         return result;
-
-    char *write = malloc(RLEListSize(list) * sizeof(char)); //need better name & find needed size with \n's
+    }
+    char *write = malloc((1+RLEListSize(list)) * sizeof(char));//need better name & find needed size with \n's
+    if(write==NULL)
+    {
+        free(list_as_string);
+        return RLE_LIST_OUT_OF_MEMORY;
+    }
     char *ptr = write;
-    //char letterToWrite = 'A';
 
     while (*list_as_string)
     {
@@ -55,35 +63,6 @@ RLEListResult asciiArtPrint(RLEList list, FILE *out_stream)
 
         list_as_string++;
 
-        /*
-        char currentChar = *list_as_string;
-        if (currentChar >= '0' && currentChar <= '9')
-        {
-            letterRepetitions = letterRepetitions * 10;
-            letterRepetitions += currentChar - '0';
-        }
-        else if (currentChar == '\n')
-        {
-            if (letterToWrite == currentChar) {
-                letterRepetitions--;
-            }
-
-            for (int i = 0; i < letterRepetitions; i++)
-            {
-                *ptr = letterToWrite;
-                ptr++;
-            }
-
-            letterToWrite = '\n';
-            letterRepetitions = 0;
-        }
-        else
-        {
-            letterToWrite = currentChar;
-        }
-
-        list_as_string++;
-         */
     }
 
     fputs(write,out_stream);
@@ -102,9 +81,17 @@ RLEListResult asciiArtPrintEncoded(RLEList list,FILE* out_stream)
 
     RLEListResult result;
     char *encoded_list= RLEListExportToString(list,&result);
+    if(encoded_list==NULL)
+    {
+        return RLE_LIST_OUT_OF_MEMORY;
+    }
     if (result != RLE_LIST_SUCCESS)
+    {
+        free(encoded_list);
         return result;
-    fprintf(out_stream,"%s" ,encoded_list);
+    }
+    //fprintf(out_stream,"%s" ,encoded_list);
+    fputs(encoded_list,out_stream);
     free(encoded_list);
     return RLE_LIST_SUCCESS;
 }

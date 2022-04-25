@@ -15,37 +15,6 @@ char InvertChar(char to_invert);
 
 int main(int argc, char** argv)
 {
-    /*
-    char *readPath = "../dog.txt", *writePath = "../writeHere.txt";
-    FILE* fileReadFrom = fopen(readPath, "r");
-    RLEList fileAsList = asciiArtRead(fileReadFrom);
-    RLEListResult result;
-    char *c = RLEListExportToString(fileAsList,&result);
-    //printf("%s",c); //here works so far!
-
-    FILE* fileWriteTo = fopen(writePath,"w");
-    //FILE* out = stdout; //doesn't work for some reason
-    //result = asciiArtPrint(fileAsList,fileWriteTo);
-    //result = asciiArtPrintEncoded(fileAsList,fileWriteTo);
-    result=RLEListMap(readPath,&InvertChar);
-    if(result!=RLE_LIST_SUCCESS)
-    {
-        printf("error map");
-        return 0;
-    }
-    asciiArtPrint(readPath,writePath);
-    RLEListDestroy(readPath);
-
-
-    if (result == RLE_LIST_ERROR)
-        printf("error");
-
-    fclose(fileReadFrom);
-    fclose(fileWriteTo);
-    return 0;
-    */
-    //-------AsciiArtTool - code ---------------
-
     if(argc!=4) //needs a define
     {
         printf("Usage: ./AsciiArtTool <flags> <source> <target>\n");
@@ -73,7 +42,6 @@ int main(int argc, char** argv)
         if (strcmp(argv[1],"-e") == 0)
         {
             asciiArtPrintEncoded(image,dest);
-            RLEListDestroy(image);
         }
         else if (strcmp(argv[1],"-i") == 0)
         {
@@ -82,21 +50,23 @@ int main(int argc, char** argv)
             if(result!=RLE_LIST_SUCCESS)
             {
                 printf("error map");
+                RLEListDestroy(image);
+                fclose(source);
+                fclose(dest);
                 return 0;
             }
             asciiArtPrint(image,dest);
-            RLEListDestroy(image);
         }
         else
         {
             printf("Unknown flag");
-            return 0;
         }
+
+        RLEListDestroy(image);
         fclose(source);
         fclose(dest);
     }
     return 0;
-
 }
 
 char InvertChar(char to_invert)
