@@ -20,3 +20,25 @@ main.o: main.c AsciiArt.h
 
 clean:
 	rm -f $(OBJS) $(EXEC)
+
+
+
+#more recent
+CC = gcc
+OBJS = RLEList.o AsciiArtTool.o main.o
+EXEC = AsciiArtTool
+DEBUG_FLAG = # now empty, assign -g for debug
+COMP_FLAG = -std=c99 -Wall -Werror -I.
+
+$(EXEC) : $(OBJS)
+	$(CC) $(DEBUG_FLAG) $(OBJS) -o $(EXEC)
+
+RLEList.o: RLEList.c RLEList.h
+	$(CC) -c $(DEBUG_FLAG) $(COMP_FLAG) $<
+AsciiArtTool.o: tool/AsciiArtTool.c tool/AsciiArtTool.h RLEList.h
+	$(CC) -c $(DEBUG_FLAG) $(COMP_FLAG) $<
+main.o: tool/main.c tool/AsciiArtTool.h
+	$(CC) -c $(DEBUG_FLAG) $(COMP_FLAG) $<
+
+clean:
+	rm -f $(OBJS) $(EXEC)

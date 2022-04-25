@@ -28,6 +28,8 @@ RLEListResult asciiArtPrint(RLEList list, FILE *out_stream)
     RLEListResult result;
     char *list_as_string = RLEListExportToString(list,&result);
     char *list_as_string_head = list_as_string;
+
+
     if(list_as_string==NULL)
         return RLE_LIST_OUT_OF_MEMORY;
     if (result != RLE_LIST_SUCCESS)//test this!!! result might be initialized as NULL ?
@@ -36,11 +38,22 @@ RLEListResult asciiArtPrint(RLEList list, FILE *out_stream)
         return result;
     }
     char *write = malloc((1+RLEListSize(list)) * sizeof(char));//need better name & find needed size with \n's
-    if(write==NULL)
+
+    if(write == NULL)
     {
         free(list_as_string);
         return RLE_LIST_OUT_OF_MEMORY;
     }
+
+    if (RLEListSize(list) == 0)
+    {
+        *write = '\0';
+        fputs(write,out_stream);
+        free(list_as_string);
+        free(write);
+        return RLE_LIST_SUCCESS;
+    }
+
     for(int i=0;i<1+RLEListSize(list);i++)
     {
         write[i]='\0';
@@ -85,6 +98,8 @@ RLEListResult asciiArtPrintEncoded(RLEList list,FILE* out_stream)
 
     RLEListResult result=RLE_LIST_SUCCESS;
     char *encoded_list= RLEListExportToString(list,&result);
+
+    printf("%s\n",encoded_list);
     if(encoded_list==NULL)
     {
         return RLE_LIST_OUT_OF_MEMORY;
@@ -95,7 +110,7 @@ RLEListResult asciiArtPrintEncoded(RLEList list,FILE* out_stream)
         return result;
     }
     //fprintf(out_stream,"%s" ,encoded_list);
-    fputs(encoded_list,out_stream);
+    //fputs(encoded_list,out_stream);
     free(encoded_list);
     return RLE_LIST_SUCCESS;
 }
