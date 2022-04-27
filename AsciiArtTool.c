@@ -69,7 +69,7 @@ RLEListResult asciiArtPrint(RLEList list, FILE *out_stream)
         return result;
     }
 
-    char *toBePrinted = malloc((1 + RLEListSize(list)) * sizeof(char));//need better name & find needed size with \n's
+    char *toBePrinted = malloc((1 + RLEListSize(list)) * sizeof(char));
     if(toBePrinted == NULL)
     {
         free(listAsString);
