@@ -4,20 +4,20 @@
 #include "RLEList.h"
 
 #define EMPTY_CHAR '\0'
+#define CHAR_CONVERT_INT '0'
+#define NEW_LINE '\n'
 #define EMPTY_NODE -1
 #define NEGATIVE_NUMBER -1
-#define NEXT_DIGIT 10
+#define UNIT_DIGIT 10
 #define EMPTY_LIST 0
 #define CHAR_AND_NEW_LINE 2
-#define CHAR_CONVERT_INT '0'
 
-static int NumOfDigits(int num);
-static int CharCount(RLEList list);
-static void PutIntInString(int num, char **writeTo);
+static int numOfDigits(int num);
+static int charCount(RLEList list);
+static void putIntInString(int num, char **writeTo);
 static char getDigit(int num, int requiredDigit);
-/*
- * TO DO:
- */
+static void returnResult(RLEListResult **putInto, RLEListResult result);
+
 
  struct RLEList_t{
     char letter;
@@ -28,20 +28,21 @@ static char getDigit(int num, int requiredDigit);
 
 RLEList RLEListCreate()
 {
-    RLEList ptr= malloc(sizeof(*ptr));
+    RLEList ptr = malloc(sizeof(*ptr));
     if(!ptr)
     {
         return NULL;
     }
-    ptr ->letter=EMPTY_CHAR;
-    ptr ->repetitions=0;
-    ptr ->next =NULL;
+    ptr->letter = EMPTY_CHAR;
+    ptr->repetitions = 0;
+    ptr->next = NULL;
     return ptr;
 }
 
 void RLEListDestroy(RLEList list)
 {
-    while(list) {
+    while(list)
+    {
         RLEList toDelete = list;
         list = list->next;
         free(toDelete);
@@ -67,14 +68,12 @@ char RLEListGet(RLEList list, int index, RLEListResult *result)
 {
     if(list==NULL)
     {
-        if(result!=NULL)
-            *result= RLE_LIST_NULL_ARGUMENT;
+        returnResult(&result,RLE_LIST_NULL_ARGUMENT);
         return EMPTY_CHAR;
     }
-    if(RLEListSize(list)-1<index || index<0)
+    if(RLEListSize(list)-1 < index || index < 0)
     {
-        if(result!=NULL)
-            *result= RLE_LIST_INDEX_OUT_OF_BOUNDS;
+        returnResult(&result,RLE_LIST_INDEX_OUT_OF_BOUNDS);
         return EMPTY_CHAR;
     }
     int count=0;
@@ -84,8 +83,7 @@ char RLEListGet(RLEList list, int index, RLEListResult *result)
         count+=list->repetitions;
         if(index+1<=count)
         {
-            if(result!=NULL)
-                *result= RLE_LIST_SUCCESS;
+            returnResult(&result,RLE_LIST_SUCCESS);
             letter=list->letter;
             break;
         }
@@ -98,49 +96,42 @@ char* RLEListExportToString(RLEList list, RLEListResult* result)
 {
     if(list==NULL)
     {
-        if (result != NULL)
-            *result= RLE_LIST_NULL_ARGUMENT;
+        returnResult(&result,RLE_LIST_NULL_ARGUMENT);
         return NULL;
     }
 
-
-
-    char *list_as_string=malloc((1+CharCount(list)) * sizeof(char));
-
-    if (!list_as_string)
+    char *listAsString=malloc((1 + charCount(list)) * sizeof(char));
+    if (!listAsString)
     {
-        if (result != NULL)
-            *result= RLE_LIST_OUT_OF_MEMORY;
+        returnResult(&result,RLE_LIST_OUT_OF_MEMORY);
         return NULL;
     }
 
-
-    for(int i=0;i<1+CharCount(list);i++)
+    for(int i=0;i< 1 + charCount(list); i++)
     {
-        list_as_string[i]=EMPTY_CHAR;
+        listAsString[i] = EMPTY_CHAR;
     }
 
-    if (CharCount(list) == 0)
+    if (charCount(list) == 0)
     {
-        *list_as_string = '\0';
-        if (result != NULL)
-            *result= RLE_LIST_SUCCESS;
-        return list_as_string;
+        *listAsString = EMPTY_CHAR;
+        returnResult(&result,RLE_LIST_SUCCESS);
+        return listAsString;
     }
-    char *stringStart = list_as_string;
+
+    char *stringStart = listAsString;
     while (list)
     {
-        *list_as_string=list->letter;
-        list_as_string++;
+        *listAsString=list->letter;
+        listAsString++;
 
-        PutIntInString(list->repetitions,&list_as_string);
+        putIntInString(list->repetitions, &listAsString);
 
-        *list_as_string='\n';
-        list_as_string++;
+        *listAsString=NEW_LINE;
+        listAsString++;
         list = list->next;
     }
-    if (result != NULL)
-        *result= RLE_LIST_SUCCESS;
+    returnResult(&result,RLE_LIST_SUCCESS);
     return stringStart;
 }
 
@@ -148,10 +139,14 @@ char* RLEListExportToString(RLEList list, RLEListResult* result)
 RLEListResult RLEListAppend(RLEList list, char value)
 {
     if (list == NULL)
+    {
         return RLE_LIST_NULL_ARGUMENT;
+    }
 
     while (list->next != NULL)
+    {
         list = list->next;
+    }
 
     if (list->letter == value)
     {
@@ -169,8 +164,9 @@ RLEListResult RLEListAppend(RLEList list, char value)
         assert(list->letter != value && list->repetitions != 0 && list->next == NULL);
         RLEList newNode = RLEListCreate();
         if (newNode == NULL)
+        {
             return RLE_LIST_OUT_OF_MEMORY;
-
+        }
         newNode->letter = value;
         newNode->repetitions = 1;
         list->next=newNode;
@@ -181,9 +177,10 @@ RLEListResult RLEListAppend(RLEList list, char value)
 RLEListResult RLEListRemove(RLEList list, int index)
 {
     if (list == NULL)
+    {
         return RLE_LIST_NULL_ARGUMENT;
-
-    if(RLEListSize(list)-1<index || index<0)
+    }
+    if(RLEListSize(list)-1<index || index < 0)
     {
         return RLE_LIST_INDEX_OUT_OF_BOUNDS;
     }
@@ -196,21 +193,22 @@ RLEListResult RLEListRemove(RLEList list, int index)
             list->repetitions=0;
             return RLE_LIST_SUCCESS;
         }
-        RLEList to_delete=list->next;
-        list->letter=to_delete->letter;
-        list->repetitions=to_delete->repetitions;
-        list->next=to_delete->next;
-        to_delete->next=NULL;
-        RLEListDestroy(to_delete);
+        RLEList toDelete=list->next;
+        list->letter=toDelete->letter;
+        list->repetitions=toDelete->repetitions;
+        list->next=toDelete->next;
+        toDelete->next=NULL;
+        RLEListDestroy(toDelete);
         return RLE_LIST_SUCCESS;
     }
 
     RLEList previousOne = list;
-
     while (list && index > list->repetitions-1)
     {
         if (list->next == NULL)
+        {
             return RLE_LIST_INDEX_OUT_OF_BOUNDS;
+        }
         index-=list->repetitions;
         previousOne = list;
         list = list->next;
@@ -218,20 +216,19 @@ RLEListResult RLEListRemove(RLEList list, int index)
 
     assert(list != NULL && index < list->repetitions);
 
-
     list->repetitions--;
     if (list->repetitions == 0)
     {
         previousOne->next = list->next;
-        RLEList next_one=list->next;
+        RLEList nextOne=list->next;
         list->next = NULL;
         RLEListDestroy(list);
-        if(next_one != NULL && next_one->letter==previousOne->letter)
+        if(nextOne != NULL && nextOne->letter == previousOne->letter)
         {
-            previousOne->repetitions+=next_one->repetitions;
-            previousOne->next=next_one->next;
-            next_one->next=NULL;
-            RLEListDestroy(next_one);
+            previousOne->repetitions+=nextOne->repetitions;
+            previousOne->next=nextOne->next;
+            nextOne->next=NULL;
+            RLEListDestroy(nextOne);
         }
     }
     return RLE_LIST_SUCCESS;
@@ -240,7 +237,9 @@ RLEListResult RLEListRemove(RLEList list, int index)
 RLEListResult RLEListMap(RLEList list, MapFunction map_function)
 {
     if (list == NULL || map_function == NULL)
+    {
         return RLE_LIST_NULL_ARGUMENT;
+    }
     RLEList head = list;
     while (list != NULL)
     {
@@ -264,7 +263,7 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function)
     return RLE_LIST_SUCCESS;
 }
 
-static int CharCount(RLEList list)
+static int charCount(RLEList list)
 {
     if (list->letter == EMPTY_CHAR)
     {
@@ -274,22 +273,24 @@ static int CharCount(RLEList list)
     while (list != NULL)
     {
         count+=CHAR_AND_NEW_LINE;
-        count += NumOfDigits(list->repetitions);
+        count += numOfDigits(list->repetitions);
         list = list->next;
     }
     return count;
 }
 
-static int NumOfDigits(int num)
-{
-    if (num < 0)
+static int numOfDigits(int num) {
+    if (num < 0) {
         return NEGATIVE_NUMBER;
+    }
     if (num == 0)
+    {
         return 1;
+    }
     int digits = 0;
     while (num != 0)
     {
-        num /= NEXT_DIGIT;
+        num /= UNIT_DIGIT;
         digits++;
     }
     return digits;
@@ -297,19 +298,27 @@ static int NumOfDigits(int num)
 
 static char getDigit(int num, int requiredDigit)
 {
-    int reductions_needed = NumOfDigits(num) - requiredDigit;
-    for (int i = 0 ; i < reductions_needed; i++)
-        num /= NEXT_DIGIT;
-    return (char)((num % NEXT_DIGIT) + CHAR_CONVERT_INT);
+    int reductionsNeeded = numOfDigits(num) - requiredDigit;
+    for (int i = 0 ; i < reductionsNeeded; i++)
+        num /= UNIT_DIGIT;
+    return (char)((num % UNIT_DIGIT) + CHAR_CONVERT_INT);
 }
 
-static void PutIntInString(int num, char **writeTo)
+static void putIntInString(int num, char **writeTo)
 {
-    int digits = NumOfDigits(num);
-    for (int i = 0; *writeTo &&i < digits; i++)
+    int digits = numOfDigits(num);
+    for (int i = 0; i < digits; i++) //for (int i = 0; *writeTo && i < digits; i++)
     {
         **writeTo = getDigit(num, i + 1);
         *writeTo += 1;
+    }
+}
+
+static void returnResult(RLEListResult **putInto, RLEListResult result)
+{
+    if (*putInto != NULL)
+    {
+        **putInto = result;
     }
 }
 
