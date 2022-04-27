@@ -241,11 +241,26 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function)
 {
     if (list == NULL || map_function == NULL)
         return RLE_LIST_NULL_ARGUMENT;
+    RLEList head = list;
     while (list != NULL)
     {
         list->letter = map_function(list->letter);
         list = list->next;
     }
+    list = head;
+    while (list && list->next)
+    {
+        while (list->next != NULL && list->letter == list->next->letter)
+        {
+            RLEList uniteWith = list->next;
+            list->repetitions += uniteWith->repetitions;
+            list->next = uniteWith->next;
+            uniteWith->next = NULL;
+            RLEListDestroy(uniteWith);
+        }
+        list = list->next;
+    }
+
     return RLE_LIST_SUCCESS;
 }
 

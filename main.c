@@ -173,5 +173,3 @@ char InvertChar(char to_invert)
         return ' ';
     return to_invert;
 }
-
-
