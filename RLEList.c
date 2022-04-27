@@ -124,9 +124,7 @@ char* RLEListExportToString(RLEList list, RLEListResult* result)
     {
         *listAsString=list->letter;
         listAsString++;
-
         putIntInString(list->repetitions, &listAsString);
-
         *listAsString=NEW_LINE;
         listAsString++;
         list = list->next;
@@ -240,13 +238,13 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function)
     {
         return RLE_LIST_NULL_ARGUMENT;
     }
-    RLEList head = list;
+    RLEList listHead = list;
     while (list != NULL)
     {
         list->letter = map_function(list->letter);
         list = list->next;
     }
-    list = head;
+    list = listHead;
     while (list && list->next)
     {
         while (list->next != NULL && list->letter == list->next->letter)
