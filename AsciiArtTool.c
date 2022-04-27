@@ -4,8 +4,8 @@
 
 #define EMPTY_CHAR '\0'
 #define NEW_LINE '\n'
-#define FACTOR 10
 #define CHAR_CONVERT_INT '0'
+#define FACTOR 10
 #define BUFFER 256
 
 RLEList asciiArtRead(FILE* in_stream)

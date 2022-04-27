@@ -4,14 +4,14 @@
 #include "RLEList.h"
 #include "AsciiArtTool.h"
 
-#define REQUIRED_ARGUMENTS 4
-#define FLAG 1
-#define SOURCE 2
-#define TARGET 3
 #define INVERT_FLAG "-i"
 #define ENCODED_FLAG "-e"
 #define TO_INVERT_1 ' '
 #define TO_INVERT_2 '@'
+#define REQUIRED_ARGUMENTS 4
+#define FLAG 1
+#define SOURCE 2
+#define TARGET 3
 
 char InvertChar(char toInvert);
 
