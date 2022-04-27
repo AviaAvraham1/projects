@@ -10,23 +10,6 @@
 
 RLEList asciiArtRead(FILE* in_stream)
 {
-    /*
-    RLEList fileRLE = RLEListCreate();
-    if(in_stream==NULL)
-    {
-        return NULL;
-    }
-    char letter=fgetc(in_stream);
-    while(letter!=EOF)
-    {
-        if(RLEListAppend(fileRLE, letter) != RLE_LIST_SUCCESS)
-        {
-            return NULL;
-        }
-        letter=fgetc(in_stream);
-    }
-    return fileRLE;
-    */
     RLEList fileRLE = RLEListCreate();
     if(in_stream==NULL)
     {

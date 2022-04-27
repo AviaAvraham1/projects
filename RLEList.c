@@ -305,7 +305,7 @@ static char getDigit(int num, int requiredDigit)
 static void putIntInString(int num, char **writeTo)
 {
     int digits = numOfDigits(num);
-    for (int i = 0; i < digits; i++) //for (int i = 0; *writeTo && i < digits; i++)
+    for (int i = 0; i < digits; i++)
     {
         **writeTo = getDigit(num, i + 1);
         *writeTo += 1;
