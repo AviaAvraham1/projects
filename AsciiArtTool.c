@@ -1,91 +1,109 @@
-//
-// Created by Noy Zini on 16/04/2022.
-// Edited by Avia Avraham on 18/04/2022
-//
-
 #include "AsciiArtTool.h"
 #include <stdio.h>
 #include <stdlib.h>
 
+#define EMPTY_CHAR '\0'
+#define NEW_LINE '\n'
+#define FACTOR 10
+#define CHAR_CONVERT_INT '0'
+#define BUFFER 256
 
 RLEList asciiArtRead(FILE* in_stream)
 {
-    RLEList file_RLE = RLEListCreate();
+    /*
+    RLEList fileRLE = RLEListCreate();
     if(in_stream==NULL)
+    {
         return NULL;
+    }
     char letter=fgetc(in_stream);
     while(letter!=EOF)
     {
-        if(RLEListAppend(file_RLE,letter)!=RLE_LIST_SUCCESS)
+        if(RLEListAppend(fileRLE, letter) != RLE_LIST_SUCCESS)
+        {
             return NULL;
+        }
         letter=fgetc(in_stream);
     }
-    return file_RLE;
+    return fileRLE;
+    */
+    RLEList fileRLE = RLEListCreate();
+    if(in_stream==NULL)
+    {
+        return NULL;
+    }
+    char buffer[BUFFER];
+    for(int j=0;j<BUFFER;j++)
+    {
+        buffer[j]=EMPTY_CHAR;
+    }
+    while (fgets(buffer,BUFFER,in_stream)!=NULL)
+    {
+        for (int i=0;i<BUFFER&&buffer[i]!=EMPTY_CHAR;i++)
+        {
+            if(RLEListAppend(fileRLE,buffer[i])!=RLE_LIST_SUCCESS)
+                return NULL;
+
+        }
+        for(int j=0;j<BUFFER;j++)
+        {
+            buffer[j]=EMPTY_CHAR;
+        }
+    }
+    return fileRLE;
 }
 
 RLEListResult asciiArtPrint(RLEList list, FILE *out_stream)
 {
-    RLEListResult result;
-    char *list_as_string = RLEListExportToString(list,&result);
-    char *list_as_string_head = list_as_string;
+    RLEListResult result=RLE_LIST_SUCCESS;
+    char *listAsString = RLEListExportToString(list, &result);
+    char *listAsStringHead = listAsString;
 
-
-    if(list_as_string==NULL)
-        return RLE_LIST_OUT_OF_MEMORY;
-    if (result != RLE_LIST_SUCCESS)//test this!!! result might be initialized as NULL ?
+    if(listAsString == NULL)
     {
-        free(list_as_string);
+        return RLE_LIST_OUT_OF_MEMORY;
+    }
+    if (result != RLE_LIST_SUCCESS)
+    {
+        free(listAsString);
         return result;
     }
-    char *write = malloc((1+RLEListSize(list)) * sizeof(char));//need better name & find needed size with \n's
 
-    if(write == NULL)
+    char *toBePrinted = malloc((1 + RLEListSize(list)) * sizeof(char));//need better name & find needed size with \n's
+    if(toBePrinted == NULL)
     {
-        free(list_as_string);
+        free(listAsString);
         return RLE_LIST_OUT_OF_MEMORY;
     }
-/*
-    if (RLEListSize(list) == 0)
-    {
-        *write = '\0';
-        fputs(write,out_stream);
-        free(list_as_string);
-        free(write);
-        return RLE_LIST_SUCCESS;
-    }
-    */
-
     for(int i=0;i<1+RLEListSize(list);i++)
     {
-        write[i]='\0';
+        toBePrinted[i]=EMPTY_CHAR;
     }
-    char *ptr = write;
 
-    while (*list_as_string)
+    char *ptr = toBePrinted;
+
+    while (*listAsString)
     {
-        char toPrint = *list_as_string;
-        list_as_string++;
+        char letterToPrint = *listAsString;
+        listAsString++;
         int letterRepetitions = 0;
-        while (*list_as_string != '\n')
+        while (*listAsString != NEW_LINE)
         {
-            letterRepetitions = letterRepetitions * 10;
-            letterRepetitions += *list_as_string - '0';
-            list_as_string++;
+            letterRepetitions = letterRepetitions * FACTOR;
+            letterRepetitions += *listAsString - CHAR_CONVERT_INT;
+            listAsString++;
         }
-
         for (int i = 0; i < letterRepetitions; i++)
         {
-            *ptr = toPrint;
+            *ptr = letterToPrint;
             ptr++;
         }
-
-        list_as_string++;
-
+        listAsString++;
     }
 
-    fputs(write,out_stream);
-    free(write);
-    free(list_as_string_head);
+    fputs(toBePrinted, out_stream);
+    free(toBePrinted);
+    free(listAsStringHead);
     return RLE_LIST_SUCCESS;
 }
 
@@ -98,19 +116,18 @@ RLEListResult asciiArtPrintEncoded(RLEList list,FILE* out_stream)
     }
 
     RLEListResult result=RLE_LIST_SUCCESS;
-    char *encoded_list= RLEListExportToString(list,&result);
+    char *encodedList= RLEListExportToString(list, &result);
 
-    if(encoded_list==NULL)
+    if(encodedList == NULL)
     {
         return RLE_LIST_OUT_OF_MEMORY;
     }
     if (result != RLE_LIST_SUCCESS)
     {
-        free(encoded_list);
+        free(encodedList);
         return result;
     }
-    //fprintf(out_stream,"%s" ,encoded_list);
-    fputs(encoded_list,out_stream);
-    free(encoded_list);
+    fputs(encodedList, out_stream);
+    free(encodedList);
     return RLE_LIST_SUCCESS;
 }
